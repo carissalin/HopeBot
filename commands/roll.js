@@ -17,6 +17,8 @@ module.exports = {
             .setDescription('How much to add to the dice roll total')
             .setRequired(true)),
 	async execute(interaction) {
+        await interaction.deferReply();
+
 		let dice = interaction.options.getString('dice', true).toLowerCase();
         let diceNum = 0;
         let diceType = 0;
@@ -31,7 +33,7 @@ module.exports = {
             // Checks if the roll is for multiple dice
             const diceParams = dice.split('d');
             if (diceParams.length != 2) {
-                await interaction.reply(`${interaction.options.getString('dice', true)} is not a valid dice!`);
+                await interaction.editReply(`${interaction.options.getString('dice', true)} is not a valid dice!`);
                 return;
             }
 
@@ -40,20 +42,20 @@ module.exports = {
         }
 
         if (isNaN(diceNum) || isNaN(diceType)) {
-            await interaction.reply(`${interaction.options.getString('dice', true)} is not a valid dice!`);
+            await interaction.editReply(`${interaction.options.getString('dice', true)} is not a valid dice!`);
             return;
         }
 
         // Min amount of dice is 1 and it must be at least a d2
         if (diceNum < 1 || diceType < 2) {
-            await interaction.reply(`${interaction.options.getString('dice', true)} is not a valid dice!`);
+            await interaction.editReply(`${interaction.options.getString('dice', true)} is not a valid dice!`);
             return;
         }
 
         // Negative modifiers are not allowed
         const modifier = interaction.options.getInteger('modifier');
         if (modifier < 0) {
-            await interaction.reply(`${interaction.options.getInteger('modifier')} is not a valid modifier!`);
+            await interaction.editReply(`${interaction.options.getInteger('modifier')} is not a valid modifier!`);
             return;
         }
 
@@ -129,11 +131,11 @@ module.exports = {
                 embed.setFooter({ text: 'Congrats, you got the max roll!' });
             }
 
-            await interaction.reply({ embeds: [embed] });
+            await interaction.editReply({ embeds: [embed] });
             return;
         } catch (error) {
             console.error(error);
-            await interaction.reply('An error occured while rolling the dice.');
+            await interaction.editReply('An error occured while rolling the dice.');
             return;
         }
 	},
