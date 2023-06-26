@@ -17,7 +17,9 @@
   },
   "homepage": "https://github.com/carissalin/DNDBot#readme",
   "dependencies": {
-    "discord.js": "^14.11.0"
+    "@randomorg/core": "^1.1.0",
+    "discord.js": "^14.11.0",
+    "undici": "^5.22.1"
   },
   "devDependencies": {
     "eslint": "^8.43.0"
