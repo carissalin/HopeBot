@@ -1,5 +1,5 @@
 const { SlashCommandBuilder, EmbedBuilder, bold } = require('discord.js');
-const { randomKey } = require('./../../config.json');
+const { randomKey } = require('../config.json');
 const randomOrgClient = require('@randomorg/core').RandomOrgClient;
 const roc = new randomOrgClient(randomKey);
 
