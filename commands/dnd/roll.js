@@ -10,6 +10,10 @@ module.exports = {
         .addStringOption(option =>
             option.setName('dice')
             .setDescription('The dice type, and how many to roll. e.g. "1d20", "4d8"')
+            .setRequired(true))
+        .addIntegerOption(option =>
+            option.setName('modifier')
+            .setDescription('How much to add to the dice roll total')
             .setRequired(true)),
 	async execute(interaction) {
 		let dice = interaction.options.getString('dice', true).toLowerCase();
@@ -23,7 +27,6 @@ module.exports = {
         } else {
             const diceParams = dice.split('d');
             if (diceParams.length != 2) {
-                console.log('Invalid array length for dice');
                 await interaction.reply(`${interaction.options.getString('dice', true)} is not a valid dice!`);
                 return;
             }
@@ -33,14 +36,18 @@ module.exports = {
         }
 
         if (isNaN(diceNum) || isNaN(diceType)) {
-            console.log('Invalid dice type');
             await interaction.reply(`${interaction.options.getString('dice', true)} is not a valid dice!`);
             return;
         }
 
         if (diceNum < 1 || diceType < 2) {
-            console.log('Invalid dice number');
             await interaction.reply(`${interaction.options.getString('dice', true)} is not a valid dice!`);
+            return;
+        }
+
+        const modifier = interaction.options.getInteger('modifier');
+        if (modifier < 0) {
+            await interaction.reply(`${interaction.options.getInteger('modifier')} is not a valid modifier!`);
             return;
         }
 
@@ -52,20 +59,29 @@ module.exports = {
             .setAuthor({ name: 'Dice Roll', iconURL: 'https://www.pngall.com/wp-content/uploads/2016/04/Dice-PNG.png' });
 
             if (diceNum == 1) {
-                await embed.setDescription(`You rolled for 1 d${diceType}`);
+                if (modifier > 0) {
+                    await embed.setDescription(`You rolled a d${diceType} + ${modifier}`);
+                } else {
+                    await embed.setDescription(`You rolled a d${diceType}`);
+                }
+            } else if (modifier > 0) {
+                await embed.setDescription(`You rolled ${diceNum} d${diceType}s + ${modifier}`);
             } else {
-                await embed.setDescription(`You rolled for ${diceNum} d${diceType}s`);
+                await embed.setDescription(`You rolled ${diceNum} d${diceType}s`);
             }
 
             let nat1 = false;
             let nat20 = false;
             let resultString = '';
             let i = 0;
+            let total = 0;
 
             for (i; i < randomResponse.length; i++) {
+                total += randomResponse[i];
+
                 if (i % 5 == 0 && i != 0) {
                     if (i == 5) {
-                        await embed.addFields({ name: 'Results:', value: resultString });
+                        await embed.addFields({ name: 'Result:', value: resultString });
                     } else {
                         await embed.addFields({ name: '\u200B', value: resultString });
                     }
@@ -84,9 +100,15 @@ module.exports = {
             }
 
             if (i <= 5) {
-                await embed.addFields({ name: 'Results:', value: resultString });
+                await embed.addFields({ name: 'Result:', value: resultString });
             } else {
                 await embed.addFields({ name: '\u200B', value: resultString });
+            }
+
+            if (modifier > 0) {
+                await embed.addFields({ name: 'Total:', value: `${total} + ${modifier} = **${total + modifier}**` });
+            } else {
+                await embed.addFields({ name: 'Total:', value: total.toString() });
             }
 
             if (nat1 && nat20) {
@@ -97,11 +119,9 @@ module.exports = {
                 embed.setFooter({ text: 'Congrats, you got the max roll!' });
             }
 
-            console.log('Dice successfully rolled');
             await interaction.reply({ embeds: [embed] });
             return;
         } catch (error) {
-            console.log('An error has occured with the dice roll');
             console.error(error);
             await interaction.reply('An error occured while rolling the dice.');
             return;
