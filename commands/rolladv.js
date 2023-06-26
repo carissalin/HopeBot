@@ -69,8 +69,8 @@ module.exports = {
 
             // Format in an embed for prettier viewing
             const embed = await new EmbedBuilder()
-            .setColor(0x0099FF)
-            .setAuthor({ name: 'Advantage Roll', iconURL: 'https://www.pngall.com/wp-content/uploads/2016/04/Dice-PNG.png' });
+            .setColor(0x3c9500)
+            .setAuthor({ name: 'Advantage Roll', iconURL: 'https://cdn.discordapp.com/attachments/1123028376219811853/1123028418796195870/green_dice.png' });
 
             if (modifier > 0) {
                 await embed.setDescription(`You rolled with advantage using ${diceNum} d${diceType}s + ${modifier}`);

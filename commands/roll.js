@@ -69,8 +69,8 @@ module.exports = {
 
             // Format in an embed for prettier viewing
             const embed = await new EmbedBuilder()
-            .setColor(0x0099FF)
-            .setAuthor({ name: 'Dice Roll', iconURL: 'https://www.pngall.com/wp-content/uploads/2016/04/Dice-PNG.png' });
+            .setColor(0x1971e2)
+            .setAuthor({ name: 'Dice Roll', iconURL: 'https://cdn.discordapp.com/attachments/1123028376219811853/1123028429294546944/blue_dice.png' });
 
             if (diceNum == 1) {
                 if (modifier > 0) {
