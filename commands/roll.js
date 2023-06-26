@@ -12,7 +12,6 @@ module.exports = {
             .setDescription('The dice type, and how many to roll. e.g. "1d20", "4d8"')
             .setRequired(true))
         .addIntegerOption(option =>
-            // TODO: Ask friends if they prefer this to be set to optional
             option.setName('modifier')
             .setDescription('How much to add to the dice roll total')
             .setRequired(true)),
@@ -42,20 +41,25 @@ module.exports = {
         }
 
         if (isNaN(diceNum) || isNaN(diceType)) {
-            await interaction.editReply(`${interaction.options.getString('dice', true)} is not a valid dice!`);
+            await interaction.editReply(`\:x: ${interaction.options.getString('dice', true)} is not a valid dice, please use the format xdx when inputting the command (e.g. 2d20, 4d8).`);
             return;
         }
 
         // Min amount of dice is 1 and it must be at least a d2
         if (diceNum < 1 || diceType < 2) {
-            await interaction.editReply(`${interaction.options.getString('dice', true)} is not a valid dice!`);
+            await interaction.editReply(`\:x: ${interaction.options.getString('dice', true)} is not a valid dice, you must have at least 1 dice with 2 faces.`);
+            return;
+        }
+
+        if (diceNum > 100) {
+            await interaction.editReply(`\:x: ${interaction.options.getString('dice', true)} is not a valid, the max amount of dice that can be rolled is 100.`);
             return;
         }
 
         // Negative modifiers are not allowed
         const modifier = interaction.options.getInteger('modifier');
         if (modifier < 0) {
-            await interaction.editReply(`${interaction.options.getInteger('modifier')} is not a valid modifier!`);
+            await interaction.editReply(`\:x: ${interaction.options.getInteger('modifier')} is not a valid modifier, modifiers must be 0 or a positive number.`);
             return;
         }
 
