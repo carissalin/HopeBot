@@ -12,6 +12,7 @@ module.exports = {
             .setDescription('The dice type, and how many to roll. e.g. "1d20", "4d8"')
             .setRequired(true))
         .addIntegerOption(option =>
+            // TODO: Ask friends if they prefer this to be set to optional
             option.setName('modifier')
             .setDescription('How much to add to the dice roll total')
             .setRequired(true)),
@@ -19,12 +20,15 @@ module.exports = {
 		let dice = interaction.options.getString('dice', true).toLowerCase();
         let diceNum = 0;
         let diceType = 0;
+
+        // Checks if the roll is for a single dice. e.g. "d20" "d8"
         if (dice.charAt(0) == 'd') {
             dice = dice.substring(1);
 
             diceNum = 1;
             diceType = parseInt(dice);
         } else {
+            // Checks if the roll is for multiple dice
             const diceParams = dice.split('d');
             if (diceParams.length != 2) {
                 await interaction.reply(`${interaction.options.getString('dice', true)} is not a valid dice!`);
@@ -40,11 +44,13 @@ module.exports = {
             return;
         }
 
+        // Min amount of dice is 1 and it must be at least a d2
         if (diceNum < 1 || diceType < 2) {
             await interaction.reply(`${interaction.options.getString('dice', true)} is not a valid dice!`);
             return;
         }
 
+        // Negative modifiers are not allowed
         const modifier = interaction.options.getInteger('modifier');
         if (modifier < 0) {
             await interaction.reply(`${interaction.options.getInteger('modifier')} is not a valid modifier!`);
@@ -52,8 +58,10 @@ module.exports = {
         }
 
         try {
+            // Generate integers from random.org
             const randomResponse = await roc.generateIntegers(diceNum, 1, diceType);
 
+            // Format in an embed for prettier viewing
             const embed = await new EmbedBuilder()
             .setColor(0x0099FF)
             .setAuthor({ name: 'Dice Roll', iconURL: 'https://www.pngall.com/wp-content/uploads/2016/04/Dice-PNG.png' });
@@ -76,9 +84,11 @@ module.exports = {
             let i = 0;
             let total = 0;
 
+            // Adds rows to the embed based on how many dice results were retrieved
             for (i; i < randomResponse.length; i++) {
                 total += randomResponse[i];
 
+                // Displays max 5 results per row
                 if (i % 5 == 0 && i != 0) {
                     if (i == 5) {
                         await embed.addFields({ name: 'Result:', value: resultString });
