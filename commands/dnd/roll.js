@@ -89,13 +89,13 @@ module.exports = {
                 }
 
                 if (randomResponse[i] == 1) {
-                    resultString = resultString.concat(bold(randomResponse[i].toString()).padEnd(9, '⠀'));
+                    resultString = resultString.concat(bold(randomResponse[i].toString()).padEnd(9, '⠀') + ' ');
                     nat1 = true;
                 } else if (randomResponse[i] == diceType) {
-                    resultString = resultString.concat(bold(randomResponse[i].toString()).padEnd(9, '⠀'));
+                    resultString = resultString.concat(bold(randomResponse[i].toString()).padEnd(9, '⠀') + ' ');
                     nat20 = true;
                 } else {
-                    resultString = resultString.concat(randomResponse[i].toString().padEnd(5, '⠀'));
+                    resultString = resultString.concat(randomResponse[i].toString().padEnd(5, '⠀') + ' ');
                 }
             }
 
