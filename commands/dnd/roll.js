@@ -12,16 +12,25 @@ module.exports = {
             .setDescription('The dice type, and how many to roll. e.g. "1d20", "4d8"')
             .setRequired(true)),
 	async execute(interaction) {
-		const dice = interaction.options.getString('dice', true).toLowerCase();
-        const diceParams = dice.split('d');
-        if (diceParams.length != 2) {
-            console.log('Invalid array length for dice');
-            await interaction.reply(`${interaction.options.getString('dice', true)} is not a valid dice!`);
-            return;
-        }
+		let dice = interaction.options.getString('dice', true).toLowerCase();
+        let diceNum = 0;
+        let diceType = 0;
+        if (dice.charAt(0) == 'd') {
+            dice = dice.substring(1);
 
-        const diceNum = parseInt(diceParams[0]);
-        const diceType = parseInt(diceParams[1]);
+            diceNum = 1;
+            diceType = parseInt(dice);
+        } else {
+            const diceParams = dice.split('d');
+            if (diceParams.length != 2) {
+                console.log('Invalid array length for dice');
+                await interaction.reply(`${interaction.options.getString('dice', true)} is not a valid dice!`);
+                return;
+            }
+
+            diceNum = parseInt(diceParams[0]);
+            diceType = parseInt(diceParams[1]);
+        }
 
         if (isNaN(diceNum) || isNaN(diceType)) {
             console.log('Invalid dice type');
@@ -43,25 +52,40 @@ module.exports = {
             .setAuthor({ name: 'Dice Roll', iconURL: 'https://www.pngall.com/wp-content/uploads/2016/04/Dice-PNG.png' });
 
             if (diceNum == 1) {
-                await embed.setDescription(`You rolled for 1 d${diceType}s`);
+                await embed.setDescription(`You rolled for 1 d${diceType}`);
             } else {
                 await embed.setDescription(`You rolled for ${diceNum} d${diceType}s`);
             }
 
             let nat1 = false;
             let nat20 = false;
+            let resultString = '';
+            let i = 0;
 
-            for (const result of randomResponse) {
-                let resultString = 'empty';
-                if (result == 1) {
-                    resultString = bold(result.toString());
+            for (i; i < randomResponse.length; i++) {
+                if (i % 5 == 0 && i != 0) {
+                    if (i == 5) {
+                        await embed.addFields({ name: 'Results:', value: resultString });
+                    } else {
+                        await embed.addFields({ name: '\u200B', value: resultString });
+                    }
+                    resultString = '';
+                }
+
+                if (randomResponse[i] == 1) {
+                    resultString = resultString.concat(bold(randomResponse[i].toString()).padEnd(9, '⠀'));
                     nat1 = true;
-                } else if (result == diceType) {
-                    resultString = bold(result.toString());
+                } else if (randomResponse[i] == diceType) {
+                    resultString = resultString.concat(bold(randomResponse[i].toString()).padEnd(9, '⠀'));
                     nat20 = true;
                 } else {
-                    resultString = result.toString();
+                    resultString = resultString.concat(randomResponse[i].toString().padEnd(5, '⠀'));
                 }
+            }
+
+            if (i <= 5) {
+                await embed.addFields({ name: 'Results:', value: resultString });
+            } else {
                 await embed.addFields({ name: '\u200B', value: resultString });
             }
 
