@@ -1,2 +1,2 @@
-# DNDBot
-A multipurpose Discord bot for D&D.
+# HopeBot
+A multipurpose Discord bot for D&D and other things.

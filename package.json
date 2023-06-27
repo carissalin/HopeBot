@@ -1,21 +1,21 @@
 {
-  "name": "dndbot",
+  "name": "hopebot",
   "version": "1.0.0",
-  "description": "A multipurpose D&D bot made for Discord.",
+  "description": "A multipurpose Discord bot for D&D and other things.",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/carissalin/DNDBot.git"
+    "url": "git+https://github.com/carissalin/HopeBot.git"
   },
   "author": "Carissa Lin",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/carissalin/DNDBot/issues"
+    "url": "https://github.com/carissalin/HopeBot/issues"
   },
-  "homepage": "https://github.com/carissalin/DNDBot#readme",
+  "homepage": "https://github.com/carissalin/HopeBot#readme",
   "dependencies": {
     "@randomorg/core": "^1.1.0",
     "discord.js": "^14.11.0",
